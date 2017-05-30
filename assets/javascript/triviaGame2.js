@@ -34,10 +34,10 @@ $(document).ready(function() {
 					"Where is Gigi in the Bootcamp 2 class from?" : ["Morocco", ["Afghanistan","Morocco","Algeria","USA"],"morocco.jpg"],
 				},
 	"Computer Language": {"What language does bootstrap mostly use?": ["CSS",["HTML","CSS","Java","Javascript"],"win.jpg"],
-					"What language use the body element to add items to a web page?": ["html", ["css",".Net","C#","Ajax"],"win.jpg"],
+					"What language use the body element to add items to a web page?": ["html", ["css",".Net","C#","html"],"win.jpg"],
 					"What language use the $ selector?" : ["jQuery", ["CSS","jQuery","Javascript","html"],"win.jpg"],
 					"Where are javascript elements located on the page" : ["body", ["head","title","link","body"],"win.jpg"],
-					"What tag element is a essential to a web page?" : ["html", ["title","div","img","h1"],"win.jpg"],
+					"What tag element is a essential to a web page?" : ["html", ["title","div","img","html"],"win.jpg"],
 				},				
 	"Human Language": {"In what language do we say Bonjour": ["French",["English","French","Italian","World Language"],"win.jpg"],
 					"Where do we speak Spanish": ["Cape Verde", ["Cape Verde","Angola","Italy","Ukraine"],"win.jpg"],
@@ -308,9 +308,6 @@ $(document).ready(function() {
 		      	
 		      	//Display Results
 		      	setTimeout(displayResults,timeoutResultValue);
-
-		      	//Display Start Over Button
-		      	$("#startOver").show();
 			}	      	
 		}
     }
