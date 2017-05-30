@@ -1,0 +1,65 @@
+<!doctype htm>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Trivia Game</title>
+	<link rel="stylesheet" href="assets/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/readable-bootstrap-min.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	<div class="container">
+		<!-- Main Header -->
+		<div class="row text-center">
+			<h1> </h1>
+		</div>
+
+		<!-- Start of the Text and Game Section -->
+		<div class="row text-center">
+			<h3 id="timeRemaining"></h3>
+		</div>
+
+		<div class="row text-center">
+			<h3 id="questionResponse"></h3>
+		</div>
+
+		
+		<div class="row">
+			<!-- Providing initial space for buttons to come -->
+			<div class="col-lg-4">	
+			</div>
+			
+			<!-- Where all Options are Displayed and stored.  To be populated dynamically by object -->
+			<div class="col-lg-6" id="options">	
+				<button type="button" id="start" class="btn btn-primary btn-lg">Start</button>
+			</div>
+			
+			<!-- Providing final space after buttons -->
+			<div class="col-lg-2">	
+			</div>
+		</div>
+		<div class="row text-center">
+			<div class="col-lg-3">	
+			</div>
+			
+			<!-- Where all Options are Displayed and stored.  To be populated dynamically by object -->
+			<div class="col-lg-6">	
+				<button type="button" id="startOver" class="btn btn-primary btn-lg">Start Over</button>
+			</div>
+			
+			<!-- Providing final space after buttons -->
+			<div class="col-lg-3">	
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+	
+	<!-- Script -->
+	<script type="text/javascript" src="assets/javascript/triviaGame2.js">
+
+		
+	</script>
+</body>
+</html>
