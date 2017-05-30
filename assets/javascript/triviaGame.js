@@ -6,8 +6,10 @@ $(document).ready(function() {
 	var currentTopicChoice;
 	var currentTopicChoiceArray;
 	var currentQuestion;
+	var currentQuestionIndex;
 	var currentOptions;
 	var currentAnswer;
+	var currentAnswerImage;
 	var gameTopics;
 	var timerNumber;
 	var intervalId;
@@ -16,38 +18,39 @@ $(document).ready(function() {
 	var incorrectCount ;
 	var unansweredCount;
 	var answerCount;
-	var timeoutValue = 50000;
-	var delayedValue = 30;
+	var timeoutQuestionValue =12000;
+	var delayedValue = 10;
+	var timeoutResultValue = 3000;
 
 	//Hide Start Over Button
 	$("#startOver").hide();	
 
 	//Defining all questions and answers for the game
 	var triviaGameObject = {
-	"Countries": { 	"What is the only country with city named NYC?": ["USA",["Canada","Belgium","USA","Algeria"]],
-					"Where did Brexit Occur?": ["UK", ["Ukraine","UK","Germany","USA"]],
-					"Where is Brice in the Bootcamp 2 class from?" : ["Cameroon", ["Jamaica","Virgin Island","USA","Norway"]],
-					"Where is Richard in the Bootcamp 2 class from?" : ["Phillipines", ["China","North Korea","Phillipines","Japan"]],
-					"Where is Gigi in the Bootcamp 2 class from?" : ["Morocco", ["Afghanistan","Morocco","Algeria","USA"]],
+	"Countries": { 	"What is the only country with city named NYC?": ["USA",["Canada","Belgium","USA","Algeria"],"usa.jpg"],
+					"Where did Brexit Occur?": ["UK", ["Ukraine","UK","Germany","USA"],"uk.jpg"],
+					"Where is Brice in the Bootcamp 2 class from?" : ["Cameroon", ["Jamaica","Cameroon","USA","Norway"],"cameroon.jpg"],
+					"Where is Richard in the Bootcamp 2 class from?" : ["Philippines", ["China","North Korea","Philippines","Japan"],"philippines.png"],
+					"Where is Gigi in the Bootcamp 2 class from?" : ["Morocco", ["Afghanistan","Morocco","Algeria","USA"],"morocco.jpg"],
 				},
-	"Computer Language": {"What language does bootstrap mostly use?": ["CSS",["HTML","CSS","Java","Javascript"]],
-					"What language use the body element to add items to a web page?": ["html", ["css",".Net","C#","Ajax"]],
-					"What language use the $ selector?" : ["jQuery", ["CSS","jQuery","Javascript","html"]],
-					"Where are javascript elements located on the page" : ["body", ["head","title","link","body"]],
-					"What tag element is a essential to a web page?" : ["html", ["title","div","img","h1"]],
+	"Computer Language": {"What language does bootstrap mostly use?": ["CSS",["HTML","CSS","Java","Javascript"],"win.jpg"],
+					"What language use the body element to add items to a web page?": ["html", ["css",".Net","C#","html"],"win.jpg"],
+					"What language use the $ selector?" : ["jQuery", ["CSS","jQuery","Javascript","html"],"win.jpg"],
+					"Where are javascript elements located on the page" : ["body", ["head","title","link","body"],"win.jpg"],
+					"What tag element is a essential to a web page?" : ["html", ["title","div","img","html"],"win.jpg"],
 				},				
-	"Human Language": {"In what language do we say Bonjour": ["French",["English","French","Italian","World Language"]],
-					"Where do we speak Spanish": ["Cape Verde", ["Cape Verde","Angola","Italy","Ukraine"]],
-					"What is the translation of At Good Bread in french" : ["Au Bon Pain", ["A Petit trot","Pas tres Loing","Au Bon Pain","C'est ca"]],
-					"This country is Bilingual" : ["Canada", ["USA","Germany","UK","Canada"]],
-					"Translate 2 in spanish" : ["Dos", ["Uno","Dosso","Deux","TwoO"]],
+	"Human Language": {"In what language do we say Bonjour": ["French",["English","French","Italian","World Language"],"win.jpg"],
+					"Where do we speak Spanish": ["Cape Verde", ["Cape Verde","Angola","Italy","Ukraine"],"win.jpg"],
+					"What is the translation of At Good Bread in french" : ["Au Bon Pain", ["A Petit trot","Pas tres Loing","Au Bon Pain","C'est ca"],"win.jpg"],
+					"This country is Bilingual" : ["Canada", ["USA","Germany","UK","Canada"],"win.jpg"],
+					"Translate 2 in spanish" : ["Dos", ["Uno","Dosso","Dos","TwoO"],"win.jpg"],
 				},				
 
-	"World Cities": {"What is the capital of the US ": ["Washington, DC",["NYC","Washington, DC","Chicago","Boston"]],
-					"Cities with the most air passengers traffic": ["Atlanta", ["Atlanta","New York City","London","Tokyo"]],
-					"Most populated city in the world" : ["Tokyo", ["NYC","Tokyo","London","Los Angeles"]],
-					"Most Literate city in the US" : ["Washington, DC", ["Washington, DC","NYC","Minneapolis","Atlanta"]],
-					"Most Expensive city to live in the world" : ["Singapore", ["NYC","Tokyo","London","Singapore"]],
+	"World Cities": {"What is the capital of the US ": ["Washington, DC",["NYC","Washington, DC","Chicago","Boston"],"win.jpg"],
+					"Cities with the most air passengers traffic": ["Atlanta", ["Atlanta","New York City","London","Tokyo"],"win.jpg"],
+					"Most populated city in the world" : ["Tokyo", ["NYC","Tokyo","London","Los Angeles"],"win.jpg"],
+					"Most Literate city in the US" : ["Washington, DC", ["Washington, DC","NYC","Minneapolis","Atlanta"],"win.jpg"],
+					"Most Expensive city to live in the world" : ["Singapore", ["NYC","Tokyo","London","Singapore"],"win.jpg"],
 				},		
 
 	// "World Cities": ["Waterfalls","tlc.jpg"],
@@ -92,6 +95,7 @@ $(document).ready(function() {
 		incorrectCount = 0;
 		unansweredCount = 0;
 		answerCount = 0;
+		currentQuestionIndex = 0;
 
 		for (var i = 0; i < gameTopics.length; i++) {
 
@@ -114,29 +118,38 @@ $(document).ready(function() {
 
   	 		//Display the topic header
 			selectedTopic = $(this).text();
+			
+			//Get Current Array of questions/options for selected topic
 			currentTopicChoice = triviaGameObject[selectedTopic];
-
+			currentTopicChoiceArray = Object.keys(currentTopicChoice);
+			
 			//Clear the section to add Question Choices
 			$("#options").empty();
 
 			//List all questions choices
-			ListTopicQuestions(currentTopicChoice);
+			ListTopicQuestions();
 		});
 
 	}
 
 	//Display options for each question with a timeout and a delay
-	function ListTopicQuestions(choices){
-		currentTopicChoiceArray = Object.keys(choices);
+	function ListTopicQuestions(){
+		questionTimeout = {};
 
 		//List Questions
 		for (var i = 0; i < currentTopicChoiceArray.length; i++) {
-			(function(index) {
-		        questionTimeout = setTimeout(function() { 
-		        	currentQuestion = currentTopicChoiceArray[index]; 
-		        	displayQuestionAnswer(currentQuestion);
-		        }, i * timeoutValue);
-		    })(i);
+
+			//This will only be performed if the question was not already displayed
+			if (i >= currentQuestionIndex){	
+
+				(function(i) {
+			        questionTimeout[i] = setTimeout(function() { 
+			   			currentQuestion = currentTopicChoiceArray[i];
+			        	displayQuestionAnswer(currentQuestion);
+			        }, (i - currentQuestionIndex) * timeoutQuestionValue);
+			        
+			    })(i);
+		    }
       	}
 	}
 
@@ -145,6 +158,7 @@ $(document).ready(function() {
 		$("#questionResponse").text(question);
 		currentAnswer = currentTopicChoice[currentQuestion][0];
 		currentOptions = currentTopicChoice[currentQuestion][1];
+		currentAnswerImage = currentTopicChoice[currentQuestion][2];
 
 		//Build the button for all options proposed
 		BuildOptionButtons(currentOptions);
@@ -158,19 +172,16 @@ $(document).ready(function() {
 
 		//Loop through array containing question options
 		for (var i = 0; i < currentOptions.length; i++) {
-
-			console.log(currentOptions)
-
-	        // 2. Create a variable named "optionBtn" equal to $("<button>");
+	        // 1. Create a variable named "optionBtn" equal to $("<button>");
 	        var optionBtn = $("<button>");
 
-	        // 3. Then give each "letterBtn" the following classes: "letter-button" "letter" "letter-button-color".
+	        // 2. Then give each "letterBtn" the following classes: "letter-button" "letter" "letter-button-color".
 	        optionBtn.addClass("option-button btn btn-primary btn-lg");
 
-	        // 5. Then give each "letterBtns" a text equal to "letters[i]".
+	        // 3. Then give each "letterBtns" a text equal to "letters[i]".
 	        optionBtn.text(currentOptions[i]);
 
-	        // 6. Finally, append each "letterBtn" to the "#buttons" div (provided).
+	        // 4. Finally, append each "letterBtn" to the "#buttons" div (provided).
 	        $("#options").append(optionBtn);
 
       	}
@@ -186,9 +197,17 @@ $(document).ready(function() {
 
       	//Adding on click event for each of the buttons
   	 	$(".option-button").on("click", function(){
+  	 		//Reset Time out
+  	 		clearQuestionTimeout();
+
   	 		//Count the number of answers overal
   	 		answerCount++;
 			
+			//Increase the index for the next question
+			currentQuestionIndex++;
+
+
+
 			selectedOption = $(this).text();
 
 			//Clear the section to add Question Choices
@@ -198,10 +217,12 @@ $(document).ready(function() {
 			if (selectedOption === currentAnswer){
 				$("#questionResponse").text("You are correct");
 				correctCount++;
+				$("#options").html("<img src='assets\\images\\" + currentAnswerImage +"'>");
 			}
 			else{
 				$("#questionResponse").text("Wrong, the current answer was " + currentAnswer);
 				incorrectCount++;
+				$("#options").html("<img src='assets\\images\\looser.gif'>");
 			}
 
 			//Run the stop function.
@@ -211,14 +232,21 @@ $(document).ready(function() {
 			clearTimeout(questionTimeout);
 
 			//Display results if all questions were answered
-	      	if (answerCount === currentTopicChoiceArray.length - 1){
+	      	if (answerCount === currentTopicChoiceArray.length){
 		      	//Display Results
-		      	displayResults();
-
-		      	//Display Start Over Button
-		      	$("#startOver").show();
+		      	setTimeout(displayResults,timeoutResultValue);
+		      	
 			}	      	
 		});
+	}
+
+	function clearQuestionTimeout(){
+   		for (var k in questionTimeout) {
+        	clearTimeout(questionTimeout[k]);
+    	}
+
+    	//Display the next question
+    	setTimeout(ListTopicQuestions,timeoutResultValue);
 	}
 
 	//Display Final Results on the screen
@@ -232,6 +260,9 @@ $(document).ready(function() {
 		$("#options").append("<p>Correct Answers: " + correctCount + " </p>");
 		$("#options").append("<p>Incorrect Answers: " + incorrectCount + " </p>");
 		$("#options").append("<p>Unanswered: " + unansweredCount + " </p>");
+
+		//Display Start Over Button
+		$("#startOver").show();
 	}
 
 	//  The run function sets an interval
@@ -251,29 +282,32 @@ $(document).ready(function() {
 
 		//  Once number hits zero...
 		if (timerNumber === 0) {
+
 			//Clear the section to add Question Choices
 			$("#options").empty();
 
 			//Count the number of answers overal
 		 	answerCount++;
 
+		 	//Increase the index for the next question
+			currentQuestionIndex++;
+
 			//  Alert the user that time is up.
-			$("#questionResponse").text("OUT OF TIME, the current answer was " + currentAnswer);
+			$("#questionResponse").text("OUT OF TIME, the correct answer was " + currentAnswer);
 			unansweredCount++;
+			$("#options").html("<img src='assets\\images\\outoftime.gif'>");
 
 			//Clear timeout of question
-			clearTimeout(questionTimeout);
+  	 		clearQuestionTimeout();
 
 			//Run the stop function.
 			stop();
 
 			//Display results if all questions were answered
-			if (answerCount === currentTopicChoiceArray.length - 1){
+			if (answerCount === currentTopicChoiceArray.length){
+		      	
 		      	//Display Results
-		      	displayResults();
-
-		      	//Display Start Over Button
-		      	$("#startOver").show();
+		      	setTimeout(displayResults,timeoutResultValue);
 			}	      	
 		}
     }

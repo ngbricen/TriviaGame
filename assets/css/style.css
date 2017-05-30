@@ -32,14 +32,18 @@ p{
 
 .topic-button{
   width: 220px;
-  margin: 40 20 20 0;
+  margin-top: 40px;
+  margin-right: 20px;
+  margin-bottom: 20px;
   color: gold;
   size: 20px;
 }
 
 .option-button{
   width: 400px;
-  margin: 5 20 5 0;
+  margin-top: 5px;
+  margin-right: 20px;
+  margin-bottom: 5px;
   color: black;
   size: 20px;
 }
@@ -49,6 +53,7 @@ img {
     height: 300px;
     border: 2px solid green;
     background-color: white;
-    margin: 40 20 0 40;
-    cursor: pointer;
+    margin-top: 40px;
+    margin-right: 20px;
+    margin-left: 40px;
 }
